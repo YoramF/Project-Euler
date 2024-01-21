@@ -8,9 +8,17 @@ position and adding these values we form a word value. For example, the word val
 If the word value is a triangle number then we shall call the word a triangle word.
 Using "words.txt" (right click and 'Save Link/Target As...'), a 16K text file containing
 nearly two-thousand common English words, how many are triangle words?
+
+Solution:
+1) Iterative approach where Tn is generated using the Tn formula above and if Tn is equal
+ input value, than we know that word is a triangle
+2) Square root calculation, and if the positive solution is a real number that Input value
+ is a triangle. n(1,2) = (-1 + sqrt(1 + 8*Tn))/2. Since we are looking for a positive
+ real number we go with the +sqrt().. option only
 */
 
 #include <stdio.h>
+#include <math.h>
 
 #define A 0x40		// set to 0x40 instead of 0x41 to normalize 'A' to 1 instead of 0
 
@@ -62,6 +70,7 @@ int word_value (char *word, int n) {
 /*
 	return 1 if input value is a triangle number or 0 otherwie
 */
+/* iterative approach
 int is_triangle (int v) {
 	int n, t;
 
@@ -69,6 +78,20 @@ int is_triangle (int v) {
 		t = n*(n+1)/2;
 
 	return (t == v? 1: 0);
+}
+*/
+/*
+ calculation approach. return 1 if the result of the square root calculation is a
+ real number. otherwise, return 0
+*/
+int is_triangle (int v) {
+	float d;
+	int i;
+
+	d = (-1 + sqrt(1.0 + 8.0*v))/2.0;
+	i = d;
+
+	return (i == d);
 }
 
 int main () {
