@@ -26,7 +26,11 @@ int main () {
 
 	for (int i = 1; i <= 1000; i++) {
 		m = i;
+<<<<<<< HEAD
 		for (int j = 1; j < i && m > 0; j++) {
+=======
+		for (int j = 1; j < i; j++) {
+>>>>>>> ea72f69e4ee2f54889e982b0b1da0885db86fe17
 			m = mul(m, i);
 		}
 		r = add(r, m);
