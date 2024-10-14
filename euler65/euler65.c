@@ -38,20 +38,47 @@ sys     0m0.060s
 #include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
 
 #include "big_numbers.h"
 
 #define MAX_D 60    // set number of digits in big numbers
 
 typedef struct {
-     char num[MAX_D];        // numerator
-     char dem[MAX_D];        // denominato
+     void *num;        // numerator
+     void *dem;        // denominato
 } FRACTION;
 
+FRACTION *gen_fr () {
+    FRACTION *f;
+
+    if ((f = malloc(sizeof(FRACTION))) == NULL) {
+        fprintf(stderr, "Failed to allocate memory for a new REACTION: %s\n", strerror(errno));
+        exit (EXIT_FAILURE);
+    }
+
+    f->dem = gen_number();
+    f->num = gen_number();
+
+    return f;
+}
+
+void release_fr (FRACTION *f) {
+    if (f != NULL) {
+        release(f->num);
+        release(f->dem);
+        free(f);
+    }
+}
+
 // Recursive function to return the greatest common denominator of a and b
-void gcd( char a[],  char b[], char c[])
+void gcd( void *a,  void *b, void *c)
 {
-    char p[DIM];
+    void *p;
+
+    p = gen_number();
 
     if (is_zero(b))
         assign(a, c);
@@ -59,12 +86,19 @@ void gcd( char a[],  char b[], char c[])
         modulo(a, b, p);
         gcd(b, p, c);  
     }
+
+    release(p);
   
 }
 
 // add two fraction numbers
 void add_f (FRACTION *f1, FRACTION *f2, FRACTION *result) {
-    char num[DIM], dem[DIM], g[DIM], p[DIM];
+    void *num, *dem, *g, *p;
+
+    num = gen_number();
+    dem = gen_number();
+    g = gen_number();
+    p = gen_number();
 
     multiply(f1->num, f2->dem, p);
     multiply(f1->dem, f2->num, g);
@@ -74,34 +108,47 @@ void add_f (FRACTION *f1, FRACTION *f2, FRACTION *result) {
     gcd(dem, num, g);
     divide(num, g, result->num);
     divide(dem, g, result->dem);
+
+    release(num);
+    release(dem);
+    release(g);
+    release(p);
 }
 
 // generate fraction based on index into sequance numbers going backward
 // assumption sequance has >= i elements
-void gen_f (int i, char seq[][MAX_D], FRACTION *f) {
-    FRACTION tf;
-    char t[MAX_D];
+void gen_f (int i, void *seq[MAX_D], FRACTION *f) {
+    FRACTION *tf;
+    void *t;
+
+    t = gen_number();
+    tf = gen_fr();
 
     make_int(f->dem, "1");
     assign(seq[--i], f->num);
 
     i--;
     while (i >= 0) {
-        make_int(tf.dem, "1");
-        assign(seq[i], tf.num);
+        make_int(tf->dem, "1");
+        assign(seq[i], tf->num);
         assign(f->num, t);
         assign(f->dem, f->num);
         assign(t, f->dem);
-        add_f(&tf, f, f);    
+        add_f(tf, f, f);    
         i--;      
     }
+
+    release(t);
+    release_fr(tf);
 }
 
 // generate the sequance for E
-void gen_e_seq (int max, char seq[][MAX_D]) {
+void gen_e_seq (int max, void *seq[100]) {
     int i, j;
-    char p[MAX_D];
+    void *p;
 
+    p = gen_number();
+    
     make_int(seq[0], "2");
     make_int(seq[1], "1");
     make_int(seq[2], "2");
@@ -118,30 +165,43 @@ void gen_e_seq (int max, char seq[][MAX_D]) {
         }
         j++;
     }
+
+    release(p);
 }
 
 int main () {
-    FRACTION f;
-    char seq[100][MAX_D];
+    FRACTION *f;
+    void *seq[100];
     int i, d, sum;
     char num[MAX_D+1], dem[MAX_D+1];
+    char *c;
 
     if (init_big_numbers(MAX_D) != MAX_D)
 		return 1;
 
+    f = gen_fr();
+
+    for (i = 0; i < 100; i++)
+        seq[i] = gen_number();
+
     gen_e_seq(100, seq);
 
-    gen_f(100, seq, &f);
+    gen_f(100, seq, f);
     
-    printf("%s/%s\n", number2str(f.num, num), number2str(f.dem, dem));
+    printf("%s/%s\n", number2str(f->num, num), number2str(f->dem, dem));
 
-    d = digits(f.num);
+    d = digits(f->num);
     sum = 0;
-
-    for (i = 0; i <= d; i++)
-        sum += f.num[i];
+    c = num;
+    for (i = 0; i < d; i++)
+        sum += c[i] - '0';
 
     printf("Answer: %d\n", sum);
+
+    for (i = 0; i < 100; i++)
+        release(seq[i]);
+
+    release_fr(f);
 
     return 0;    
 
