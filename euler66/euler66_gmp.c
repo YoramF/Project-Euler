@@ -69,6 +69,8 @@ bool Pell (mpz_t x,  mpz_t y,  int D) {
     mpz_sub(p3, p1, p2);    // p3 = p1-p2;
     b = mpz_cmp_si(p3, 1);  // check if p3 == 1
 
+    mpz_clears(p1, p2, p3, NULL);
+
     return b == 0;
 }
 
@@ -115,7 +117,7 @@ int gen_seq (int max, unsigned num, unsigned seq[]) {
     if (p < max) {
         i = p-1;    // number of numbers in single repetition
         n = p-i;
-        while (p < max) {
+        while (p < max-1) {
             seq[++p] = seq[n++];
         }
     }
@@ -139,13 +141,15 @@ void gen_f (int i, int seq[], mpq_t *f) {
         mpq_canonicalize(*f);            // reduce f
         i--;      
     }
+
+    mpq_clear(tf);
 }
 
  unsigned main () {
-    mpq_t f;
-    unsigned i, D, lD;
-    mpz_t X, x, y;       // big numbers
     unsigned seq[MAX_SEQ];
+    unsigned i, D, lD;
+    mpz_t y, x, X;  // big numbers
+    mpq_t f;
 
     mpq_init(f);
     mpz_init(X);
@@ -159,9 +163,9 @@ void gen_f (int i, int seq[], mpq_t *f) {
             // assume that an integer solution for the given Pell equation
             // must be found in less than 50 iterations
             while (i < MAX_SEQ) {
-                gen_f(i, seq, &f);
+                gen_f(i, seq, &f);  
                 mpq_get_num(x, f);      // x = f numerator
-                mpq_get_den(y, f);      // y = f denominator         
+                mpq_get_den(y, f);      // y = f denominator      
                 if (Pell(x, y, D)) { 
                     break;
                 }
@@ -181,5 +185,7 @@ void gen_f (int i, int seq[], mpq_t *f) {
     mpz_out_str(stdout, 10, X);
     printf("\n");
 
+    mpq_clear(f);
+    mpz_clears(X, x, y, NULL);
     return EXIT_SUCCESS;
 }
