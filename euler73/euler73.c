@@ -19,12 +19,13 @@ sys     0m0.015s
 int gdc (int a, int b) {
     int x;
 
-    if (b == 0)
-        return (a);
-    else {
+    x = a % b;
+    while (x != 0) {
+        a = b;
+        b = x;
         x = a % b;
-        return gdc(b, x);  
-    }   
+    }
+    return b;
 }
 
 int main () {
