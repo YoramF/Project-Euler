@@ -2,8 +2,8 @@
 Solution:
     Maximum sum of the factorial for 999,999 is 2,177,280. Therefore it is safe to use unsigned
     to store sum of the factorial values
-    generate an array of factial sums each holds the count of starting numbers that generate
-    this factiral sum
+    generate an array of factorial sums each holds the count of starting numbers that generate
+    this factoriral sum
     loop the factorial array and for each starting number generate its chain. once a chain
     as exactly 60 terms add to the overall count the number of starting numbers that was saved
     in the array
@@ -43,16 +43,6 @@ unsigned int s_fact (unsigned int n) {
     }
 
     return sum;
-}
-
-int count_d (unsigned int num) {
-    int n;
-
-    while (num) {
-        n++;
-        num /= 10;
-    }
-    return n;
 }
 
 int main () {
