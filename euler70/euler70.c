@@ -1,14 +1,13 @@
 /*
 solution:
 brute fource approach.
-most of the time is spent in generating the prime numbers array.
 
 answer: 
 n: 8319823, factors:8313928, n/t_f(n):1.000709
 
-real    0m49.398s
+real    0m10.210s
 user    0m0.015s
-sys     0m0.045s
+sys     0m0.060s
 
 */
 
@@ -25,9 +24,9 @@ sys     0m0.045s
 #define MAX_DIGITS 10
 #define MAX_PRIMES 10000000
 
-int binarySearch(unsigned long arr[], unsigned int low, unsigned int high, unsigned long x);
+int binarySearch(unsigned long arr[], int low, int high, unsigned long x);
 
-#define is_prime(num,prime_size,prime_arr) binarySearch((prime_arr),0,(prime_size),(num))
+#define is_prime(num,prime_size,prime_arr) (binarySearch((prime_arr),0,(prime_size),(num)) > -1)
 
 
 // return TRUE if n2 is a permutation of n2
@@ -62,8 +61,8 @@ bool is_perm (unsigned long n1, unsigned long n2) {
     return (i == 0);
 }
 
-unsigned long *gen_prime (int max) {
-	int ind = 1, p_ind;
+unsigned long *gen_prime (unsigned long max, unsigned long *r_size) {
+	int ind, p_ind;
     unsigned long i, j, k, p;
 	int isPrime;
     unsigned long *primes;
@@ -73,15 +72,13 @@ unsigned long *gen_prime (int max) {
         return NULL;
     }
 
-	primes[0] = 1;
-	primes[1] = 2;
-
-    i = 2;
-	while (ind < max)
-	{
+	primes[0] = 2;
+	primes[1] = 3;
+ 
+    ind = 2;
+	for (i = 5; i <= max; i++) {
 		isPrime = 1;
-        i++;
-        p_ind = 1;
+        p_ind = 0;
 		// It is enough to check up to the square root of each number.
 		// Beyond this value, all factors that constract the number start to repeat
 		// For instamce the number 12 is constract of 1 x 12, 2 x 6, 3 x 4, 4 x 3, 6 x 2 and 12 x 1.
@@ -97,17 +94,22 @@ unsigned long *gen_prime (int max) {
 		}
 		if (isPrime)
 		{
-			primes[++ind] = i;
+			primes[ind++] = i;
 		}
 	}
 
+    if ((primes = realloc(primes, ind*sizeof(unsigned long))) == NULL) {
+        fprintf(stderr, "Failed to reallocate RAM: %s\n", strerror(errno));
+        return NULL;        
+    }
+    *r_size = ind;
     return primes;
 }
 
 // An iterative binary search function.
-int binarySearch(unsigned long arr[], unsigned int low, unsigned int high, unsigned long x) {
+int binarySearch(unsigned long arr[], int low, int high, unsigned long x) {
     while (low <= high) {
-        unsigned int mid = low + (high - low) / 2;
+        unsigned long mid = low + (high - low) / 2;
 
         // Check if x is present at mid
         if (arr[mid] == x)
@@ -126,27 +128,27 @@ int binarySearch(unsigned long arr[], unsigned int low, unsigned int high, unsig
     return -1;
 }
 
-void gen_prime_factors (unsigned long num, SET *s, unsigned long *primes) {
+void gen_prime_factors (unsigned long num, SET *s, unsigned long *primes, unsigned long p_size) {
     int i, r_sum;
     set_clear(s);
 
-    if (is_prime(num, num, primes) > 0) {
+    if (is_prime(num, p_size, primes)) {
         set_insert(s, &num);
         return;
     }
 
 
-    i = 1;
+    i = 0;
     r_sum = num;
 
-    while (r_sum > 1 && primes[i] <= r_sum && i < MAX_PRIMES) {
+    while (r_sum > 1 && primes[i] <= r_sum && i < p_size) {
         if (r_sum % primes[i] == 0) {
             set_insert(s, &primes[i]);
             do {
                 r_sum /= primes[i];
             } while (r_sum % primes[i] == 0);
 
-            if (is_prime(r_sum, r_sum, primes) > 0) {
+            if ((r_sum > 1) && is_prime(r_sum, p_size, primes)) {
                 set_insert(s, &r_sum);
                 return;
             }
@@ -172,19 +174,19 @@ unsigned long totient_function (unsigned long n, SET *set) {
 }
 
 int main () {
-    unsigned long p, Ln, Ltf, ultf;
+    unsigned long p, Ln, Ltf, ultf, p_size;
     SET *set;
     double long d, Md;
     unsigned long *primes;
 
     set = set_create(20, sizeof(p));
-    primes = gen_prime(MAX_PRIMES);
+    primes = gen_prime(MAX_PRIMES, &p_size);
 
     Md = 10000000.0;
     Ln = 0;
 
     for (p = 2; p < 10000000; p++) {
-        gen_prime_factors(p, set, primes);
+        gen_prime_factors(p, set, primes, p_size);
         ultf = totient_function(p, set);
         if (is_perm(p, ultf)) {
             d = (double long)p/(double long)ultf;
