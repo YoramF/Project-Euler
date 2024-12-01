@@ -23,6 +23,16 @@ int main (int argc, char *argv[]) {
     printf("size: %llu, last: %llu\n", psizel, primesl[psizel-1]);
     free(primesl);
 
+    if (is_prime_ll(97, primesl, psizel))
+        printf("97 is prime\n");
+
+    if (is_prime_ll(2, primesl, psizel))
+        printf("2 is prime\n");
+
+
+    if (!is_prime_ll(1, primesl, psizel))
+        printf("1 is not prime\n");
+
     max = atol(argv[1]);
     st = time(NULL);
     primes = gen_prime(max, &psize);
@@ -30,6 +40,7 @@ int main (int argc, char *argv[]) {
 
     printf("time: %u sec\n", en-st);
     printf("size: %lu, last: %lu\n", psize, primes[psize-1]);
+
 
 
     free(primes);

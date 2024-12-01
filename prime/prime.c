@@ -111,3 +111,68 @@ unsigned long long  *gen_prime_ll (unsigned long long max, unsigned long long *p
     return primes;       
 }
 
+
+// An iterative binary search function.
+bool is_prime(unsigned long x, unsigned long arr[], unsigned long p_size) {
+    unsigned long mid, low = 0, high = p_size-1;
+
+    while (low < high) {
+        mid = low + (high - low) / 2;
+
+        // Check if x is present at mid
+        if (arr[mid] == x)
+            return true;
+
+        // If x greater, ignore left half
+        if (arr[mid] < x)
+            low = mid + 1;
+
+        // If x is smaller, ignore right half 
+        else if (mid > 0)
+            high = mid - 1;
+
+        // but don't move beyond 0
+        else
+            break;
+    }
+
+    // we got here if low == high
+    // Check if x is present at last position possible (low or high)
+    if (arr[low] == x)
+        return true;
+    else
+        return false;
+}
+
+// An iterative binary search function.
+bool is_prime_ll(unsigned long long x, unsigned long long arr[], unsigned long long p_size) {
+    unsigned long long mid, low = 0, high = p_size-1;
+
+    while (low < high) {
+        mid = low + (high - low) / 2;
+
+        // Check if x is present at mid
+        if (arr[mid] == x)
+            return true;
+
+        // If x greater, ignore left half
+        if (arr[mid] < x)
+            low = mid + 1;
+
+        // If x is smaller, ignore right half 
+        else if (mid > 0)
+            high = mid - 1;
+
+        // but don't move beyond 0
+        else
+            break;
+    }
+
+    // we got here if low == high
+    // Check if x is present at last position possible (low or high)
+    if (arr[low] == x)
+        return true;
+    else
+        return false;
+}
+
