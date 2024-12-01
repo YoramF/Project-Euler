@@ -5,9 +5,9 @@ brute fource approach.
 answer: 
 n: 8319823, factors:8313928, n/t_f(n):1.000709
 
-real    0m10.210s
-user    0m0.015s
-sys     0m0.060s
+real    0m9.602s
+user    0m0.060s
+sys     0m0.061s
 
 */
 
@@ -20,14 +20,10 @@ sys     0m0.060s
 #include <stdbool.h>
 
 #include "sets.h"
+#include "prime.h"
 
 #define MAX_DIGITS 10
 #define MAX_PRIMES 10000000
-
-int binarySearch(unsigned long arr[], int low, int high, unsigned long x);
-
-#define is_prime(num,prime_size,prime_arr) (binarySearch((prime_arr),0,(prime_size),(num)) > -1)
-
 
 // return TRUE if n2 is a permutation of n2
 bool is_perm (unsigned long n1, unsigned long n2) {
@@ -61,78 +57,12 @@ bool is_perm (unsigned long n1, unsigned long n2) {
     return (i == 0);
 }
 
-unsigned long *gen_prime (unsigned long max, unsigned long *r_size) {
-	int ind, p_ind;
-    unsigned long i, j, k, p;
-	int isPrime;
-    unsigned long *primes;
-
-    if ((primes = (unsigned long *)malloc(max*sizeof(unsigned long))) == NULL) {
-        fprintf(stderr, "Failed to allocate RAM: %s\n", strerror(errno));
-        return NULL;
-    }
-
-	primes[0] = 2;
-	primes[1] = 3;
- 
-    ind = 2;
-	for (i = 5; i <= max; i++) {
-		isPrime = 1;
-        p_ind = 0;
-		// It is enough to check up to the square root of each number.
-		// Beyond this value, all factors that constract the number start to repeat
-		// For instamce the number 12 is constract of 1 x 12, 2 x 6, 3 x 4, 4 x 3, 6 x 2 and 12 x 1.
-		// Square root of 12 is 3.46.. -> 4. Therefor it is enought to check up to 4
-		k = (unsigned long)sqrtl(i)+1;
-		for (j = primes[p_ind]; j < k; j = primes[++p_ind])
-		{
-			if (i % j == 0)
-			{
-				isPrime = 0;
-				break;
-			}
-		}
-		if (isPrime)
-		{
-			primes[ind++] = i;
-		}
-	}
-
-    if ((primes = realloc(primes, ind*sizeof(unsigned long))) == NULL) {
-        fprintf(stderr, "Failed to reallocate RAM: %s\n", strerror(errno));
-        return NULL;        
-    }
-    *r_size = ind;
-    return primes;
-}
-
-// An iterative binary search function.
-int binarySearch(unsigned long arr[], int low, int high, unsigned long x) {
-    while (low <= high) {
-        unsigned long mid = low + (high - low) / 2;
-
-        // Check if x is present at mid
-        if (arr[mid] == x)
-            return mid;
-
-        // If x greater, ignore left half
-        if (arr[mid] < x)
-            low = mid + 1;
-
-        // If x is smaller, ignore right half
-        else
-            high = mid - 1;
-    }
-
-    // If we reach here, then element was not present
-    return -1;
-}
 
 void gen_prime_factors (unsigned long num, SET *s, unsigned long *primes, unsigned long p_size) {
     int i, r_sum;
     set_clear(s);
 
-    if (is_prime(num, p_size, primes)) {
+    if (is_prime(num, primes, p_size)) {
         set_insert(s, &num);
         return;
     }
@@ -148,7 +78,7 @@ void gen_prime_factors (unsigned long num, SET *s, unsigned long *primes, unsign
                 r_sum /= primes[i];
             } while (r_sum % primes[i] == 0);
 
-            if ((r_sum > 1) && is_prime(r_sum, p_size, primes)) {
+            if ((r_sum > 1) && is_prime(r_sum, primes, p_size)) {
                 set_insert(s, &r_sum);
                 return;
             }
