@@ -1,5 +1,5 @@
 /*
-Solution: similar to problem 31 with the folloeing changes:
+Solution: similar to problem 31 with the following changes:
 1) instead of using set of coins, use set of prime numbers
 2) here we are looking for the first sum with 5000 Prime Summations
 
