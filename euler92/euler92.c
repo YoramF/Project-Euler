@@ -5,12 +5,12 @@ Solution approach:
 Start with 2 and calcuate the number chain recurdivly until arriving to 89 or 1 (stop numbers). 
 One arrived to one of the stop numbers, start returing from the call and mark each number on 
 the chain with the stop number.
-Eventually we will momoize the stoing number fo any numer between 1-10M
+
 
 sum: 8581146
 
-real    0m0.383s
-user    0m0.379s
+real    0m0.371s
+user    0m0.367s
 sys     0m0.003s
 */
 
@@ -22,11 +22,6 @@ sys     0m0.003s
 // calculate the new number based on num
 int g_n_num (int num) {
     int d, n_num = 0;
-    sum = 0;
-    for (n = 0; n < MAX_NUM; n++)
-        sum += s_nums[n]>0? 1: 0;
-
-    printf("%d\n", sum);
 
     while (num > 0) {
         d = num % 10;
@@ -46,8 +41,10 @@ int get_stop (int num, int s_nums[]) {
         return s_nums[n_num];
     else if (n_num == 1 || n_num == 89)
         return n_num;
-    else
+    else {
         s_nums[n_num] = get_stop(n_num, s_nums);
+        return s_nums[n_num];
+    }
 }
 
 void main () {
