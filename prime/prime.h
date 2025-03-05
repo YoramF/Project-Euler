@@ -3,9 +3,9 @@
 
 #include <stdbool.h>
 
-unsigned long *gen_prime (unsigned long max, unsigned long *p_size);
-unsigned long long  *gen_prime_ll (unsigned long long max, unsigned long long *p_size);
-bool is_prime(unsigned long x, unsigned long arr[], unsigned long p_size);
-bool is_prime_ll(unsigned long long x, unsigned long long arr[], unsigned long long p_size);
+unsigned *gen_prime (unsigned max, unsigned *p_size);
+long unsigned *gen_prime_ll (long unsigned max, long unsigned *p_size);
+bool is_prime(long unsigned x, long unsigned arr[], long unsigned p_size);
+bool is_prime_ll(long unsigned x, long unsigned arr[], long unsigned p_size);
 
 #endif /* PRIME_H_ */

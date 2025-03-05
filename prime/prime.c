@@ -9,9 +9,9 @@
 
 // generate prime numbers based on sieve of eratosthenes
 // support max up to 2^32-1
-unsigned long *gen_prime (unsigned long max, unsigned long *p_size) {
-    unsigned long i, k, p, limit, j;
-    unsigned long *primes;
+unsigned *gen_prime (unsigned max, unsigned *p_size) {
+    unsigned i, k, p, limit, j;
+    unsigned *primes;
     bool *seive;
 
     if ((seive = malloc((max+1)*sizeof(bool))) == NULL) {
@@ -22,7 +22,7 @@ unsigned long *gen_prime (unsigned long max, unsigned long *p_size) {
     // reset seive array to true
     memset(seive, true, max);
 
-    limit = (unsigned long)sqrtl((long double)max);
+    limit = (unsigned)sqrtl((double)max);
     for (i = 2; i <= limit; i++) {
         if (seive[i]) {
             k = i*i;
@@ -42,7 +42,7 @@ unsigned long *gen_prime (unsigned long max, unsigned long *p_size) {
         if (seive[j])
            k++; 
 
-    if ((primes = (unsigned long *)malloc(k*sizeof(unsigned long))) == NULL) {
+    if ((primes = (unsigned  *)malloc(k*sizeof(unsigned ))) == NULL) {
         fprintf(stderr, "Failed to allocate RAM: %s\n", strerror(errno));
         return NULL;
     }
@@ -61,9 +61,9 @@ unsigned long *gen_prime (unsigned long max, unsigned long *p_size) {
 
 // generate prime numbers based on sieve of eratosthenes
 // support max up to 2^64-1
-unsigned long long  *gen_prime_ll (unsigned long long max, unsigned long long *p_size) {
-    unsigned long long i, k, p, limit, j;
-    unsigned long long *primes;
+long unsigned  *gen_prime_ll (long unsigned max, long unsigned *p_size) {
+    long unsigned i, k, p, limit, j;
+    long unsigned *primes;
     bool *seive;
 
     if ((seive = malloc((max+1)*sizeof(bool))) == NULL) {
@@ -74,7 +74,7 @@ unsigned long long  *gen_prime_ll (unsigned long long max, unsigned long long *p
     // reset seive array to true
     memset(seive, true, max);
 
-    limit = (unsigned long long)sqrtl((long double)max);
+    limit = (long unsigned)sqrtl((long double)max);
     for (i = 2; i <= limit; i++) {
         if (seive[i]) {
             k = i*i;
@@ -94,7 +94,7 @@ unsigned long long  *gen_prime_ll (unsigned long long max, unsigned long long *p
         if (seive[j])
            k++; 
 
-    if ((primes = (unsigned long long *)malloc(k*sizeof(unsigned long long))) == NULL) {
+    if ((primes = (long unsigned *)malloc(k*sizeof(long unsigned))) == NULL) {
         fprintf(stderr, "Failed to allocate RAM: %s\n", strerror(errno));
         return NULL;
     }
@@ -113,8 +113,8 @@ unsigned long long  *gen_prime_ll (unsigned long long max, unsigned long long *p
 
 
 // An iterative binary search function.
-bool is_prime(unsigned long x, unsigned long arr[], unsigned long p_size) {
-    unsigned long mid, low = 0, high = p_size-1;
+bool is_prime(long unsigned x, long unsigned arr[], long unsigned p_size) {
+    long unsigned mid, low = 0, high = p_size-1;
 
     while (low < high) {
         mid = low + (high - low) / 2;
@@ -145,8 +145,8 @@ bool is_prime(unsigned long x, unsigned long arr[], unsigned long p_size) {
 }
 
 // An iterative binary search function.
-bool is_prime_ll(unsigned long long x, unsigned long long arr[], unsigned long long p_size) {
-    unsigned long long mid, low = 0, high = p_size-1;
+bool is_prime_ll(long unsigned x, long unsigned arr[], long unsigned p_size) {
+    long unsigned mid, low = 0, high = p_size-1;
 
     while (low < high) {
         mid = low + (high - low) / 2;
