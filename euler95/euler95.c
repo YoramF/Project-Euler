@@ -161,7 +161,6 @@ void main () {
                     min_num = num;
 
                 in_chain_nums[num] = 1;
-                nums[num] = 1;
                 count++;
     
                 // check if we got an amicable chain
