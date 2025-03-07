@@ -8,9 +8,9 @@
 
 max_min_num: 14316, max_count: 28
 
-real    6m59.097s
-user    6m58.835s
-sys     0m0.026s
+real    2m12.309s
+user    2m12.239s
+sys     0m0.007s
     
 */
 
@@ -133,9 +133,13 @@ void main () {
     char nums [MAX_LIMIT+1];
     char in_chain_nums [MAX_LIMIT+1];
     int max_count = 0, max_first = MAX_LIMIT, max_min_num;
+    int num_sum [MAX_LIMIT+1];
 
     // reset nums 
     memset(nums, 0, sizeof(nums));
+
+    // reset num_sum
+    memset(num_sum, 0, sizeof(num_sum));
 
     // 1000003 is next prime after 999983. we must have prime bigger than 1M
     primes = gen_prime(1000004, &p_size);
@@ -150,9 +154,14 @@ void main () {
         memset(in_chain_nums, 0, sizeof(in_chain_nums));
 
         while (true) {
-            p_s = gen_div(num, primes, p_size);
-            sum = sum_div(p_s);
-            free(p_s);
+            if (num_sum[num] == 0) {
+                p_s = gen_div(num, primes, p_size);
+                sum = sum_div(p_s);
+                num_sum[num] = sum;
+                free(p_s);
+            }
+            else
+                sum = num_sum[num];
 
             // validate that new sun is valid
             if (sum <= MAX_LIMIT && in_chain_nums[sum] == 0 && nums[sum] == 0) {
