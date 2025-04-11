@@ -1,5 +1,5 @@
 /*
-https://projecteuler.net/problem=108
+https://projecteuler.net/problem=108 
 
 Solution: 1/x+1/y=1/n => n*x+n*y=x*y => 0 = n*x+n*y-x*y => 
 n^2 = x*y-n*x-n*y+n^2 => n^2=(x-n)(y-n) => n^2=a*b
@@ -12,7 +12,6 @@ n: 180180
 real    0m0.069s
 user    0m0.061s
 sys     0m0.008s
-
 */
 
 #include <stdio.h>
