@@ -11,7 +11,7 @@ prime_d.o: prime.c prime.h
 	gcc -g -c prime.c -o prime_d.o
 
 tst_d: tst.c libprime_d.a
-	gcc -g tst.c -o tst_debug.exe -lprime_d -L .
+	gcc -g tst.c -o tst_d -lprime_d -L . -lm
 
 tst: tst.c libprime.a
-	gcc -s tst.c -o tst.exe -lprime -L .
+	gcc -s tst.c -o tst -lprime -L . -lm

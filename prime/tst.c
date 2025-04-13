@@ -5,10 +5,10 @@
 #include "prime.h"
 
 int main (int argc, char *argv[]) {
-    unsigned long long maxl, psizel;
-    unsigned long long *primesl;
-    unsigned long max, psize;
-    unsigned long *primes;
+    long unsigned maxl, psizel;
+    long unsigned *primesl;
+    unsigned max, psize;
+    unsigned *primes;
     time_t st, en;
 
     if (argc < 1)
@@ -16,34 +16,46 @@ int main (int argc, char *argv[]) {
 
     maxl = atoll(argv[1]);
     st = time(NULL);
-    primesl = gen_prime_ll(maxl, &psizel);
+    primesl = gen_prime_ll_r(50, maxl, &psizel);
     en = time(NULL);
 
-    printf("time: %u sec\n", en-st);
-    printf("size: %llu, last: %llu\n", psizel, primesl[psizel-1]);
-    free(primesl);
-
-    if (is_prime_ll(97, primesl, psizel))
-        printf("97 is prime\n");
-
-    if (is_prime_ll(2, primesl, psizel))
-        printf("2 is prime\n");
-
-
-    if (!is_prime_ll(1, primesl, psizel))
-        printf("1 is not prime\n");
+    printf("size: %lu\n", psizel);
+    if (primesl != NULL) {
+        printf("time: %lu sec\n", (long unsigned)(en-st));
+        printf("size: %lu, last: %lu\n", psizel, primesl[psizel-1]);
+        for (int i = 0; i < psizel; i++)
+            printf("%lu, ", primesl[i]);
+        printf("\n");
+    
+    
+        if (is_prime_ll(97, primesl, psizel))
+            printf("97 is prime\n");
+    
+        if (is_prime_ll(2, primesl, psizel))
+            printf("2 is prime\n");
+    
+    
+        if (!is_prime_ll(1, primesl, psizel))
+            printf("1 is not prime\n");
+    
+        free(primesl);
+    }
 
     max = atol(argv[1]);
     st = time(NULL);
-    primes = gen_prime(max, &psize);
-    en = time(NULL);
+    primes = gen_prime_r(50, max, &psize);
+    printf("size: %u\n", psize);
+    if (primes != NULL) {
+        for (int i = 0; i < psize; i++)
+        printf("%u, ", primes[i]);
+        en = time(NULL);
 
-    printf("time: %u sec\n", en-st);
-    printf("size: %lu, last: %lu\n", psize, primes[psize-1]);
+        printf("time: %lu sec\n", (long unsigned)(en-st));
+        printf("size: %u, last: %u\n", psize, primes[psize-1]);
 
+        free(primes);
+    }
 
-
-    free(primes);
 
     return 1;
 
