@@ -18,7 +18,7 @@ typedef struct {
 
 
 
-void initialize_sieve (Sieve* p_sieve)
+static void initialize_sieve (Sieve* p_sieve)
 {
   p_sieve->size = 2;
   mpz_init(p_sieve->table);
@@ -26,7 +26,7 @@ void initialize_sieve (Sieve* p_sieve)
 
 
 
-void destroy_sieve (Sieve* p_sieve)
+static void destroy_sieve (Sieve* p_sieve)
 {
   mpz_clear(p_sieve->table);
   p_sieve->size = 0;
@@ -34,7 +34,7 @@ void destroy_sieve (Sieve* p_sieve)
 
 
 
-int sieve_primality_test (unsigned int n, Sieve* p_sieve)
+static int sieve_primality_test (unsigned int n, Sieve* p_sieve)
 {
   if (n <= p_sieve->size) {
     return !mpz_tstbit(p_sieve->table, n);
@@ -62,7 +62,7 @@ typedef struct {
 
 
 
-void initialize_polynomial (Polynomial** pp_poly, unsigned int deg)
+static void initialize_polynomial (Polynomial** pp_poly, unsigned int deg)
 {
   (*pp_poly) = (Polynomial*)malloc(sizeof(Polynomial));
   (*pp_poly)->coef = (mpz_t*)malloc((deg + 1) * sizeof(mpz_t));
@@ -75,7 +75,7 @@ void initialize_polynomial (Polynomial** pp_poly, unsigned int deg)
 
 
 
-void destroy_polynomial (Polynomial** pp_poly)
+static void destroy_polynomial (Polynomial** pp_poly)
 {
   unsigned int i;
   for (i = 0; i <= (*pp_poly)->deg; i++) {
@@ -88,7 +88,7 @@ void destroy_polynomial (Polynomial** pp_poly)
 
 
 
-void clone_polynomial(Polynomial** pp_poly_cloned, Polynomial* p_poly)
+static void clone_polynomial(Polynomial** pp_poly_cloned, Polynomial* p_poly)
 {
   (*pp_poly_cloned) = (Polynomial*)malloc(sizeof(Polynomial));
   (*pp_poly_cloned)->coef = (mpz_t*)malloc((p_poly->deg + 1) * sizeof(mpz_t));
@@ -101,7 +101,7 @@ void clone_polynomial(Polynomial** pp_poly_cloned, Polynomial* p_poly)
 
 
 
-void compact_polynomial (Polynomial* p_poly)
+static void compact_polynomial (Polynomial* p_poly)
 {
   unsigned int i;
   for (i = p_poly->deg; i > 0; i--) {
@@ -122,7 +122,7 @@ void compact_polynomial (Polynomial* p_poly)
 
 
 /* Return 1 if two polynomials are equal */
-int is_equal_polynomial (Polynomial* p_poly0, Polynomial* p_poly1)
+static int is_equal_polynomial (Polynomial* p_poly0, Polynomial* p_poly1)
 {
   if (p_poly0->deg != p_poly1->deg) {
     return 0;
@@ -138,7 +138,7 @@ int is_equal_polynomial (Polynomial* p_poly0, Polynomial* p_poly1)
 
 
 
-void get_polynomial_coef (mpz_t* p_coef, 
+static void get_polynomial_coef (mpz_t* p_coef, 
 				 Polynomial* p_poly, unsigned int order)
 {
   if (order > p_poly->deg) {
@@ -150,7 +150,7 @@ void get_polynomial_coef (mpz_t* p_coef,
 
 
 
-void set_polynomial_coef (Polynomial* p_poly, unsigned int order, 
+static void set_polynomial_coef (Polynomial* p_poly, unsigned int order, 
 			  mpz_t* p_coef)
 {
   if (order <= p_poly->deg) {
@@ -168,7 +168,7 @@ void set_polynomial_coef (Polynomial* p_poly, unsigned int order,
 
 
 
-void set_polynomial_coef_si (Polynomial* p_poly, unsigned int order, 
+static void set_polynomial_coef_si (Polynomial* p_poly, unsigned int order, 
 			     int coef_si)
 {
   if (order <= p_poly->deg) {
@@ -186,7 +186,7 @@ void set_polynomial_coef_si (Polynomial* p_poly, unsigned int order,
 
 
 
-void polynomial_modular_multiplication (Polynomial** pp_poly_res, 
+static void polynomial_modular_multiplication (Polynomial** pp_poly_res, 
 					Polynomial* p_poly0, Polynomial* p_poly1, 
 					mpz_t n, unsigned int r)
 {
@@ -232,7 +232,7 @@ void polynomial_modular_multiplication (Polynomial** pp_poly_res,
 
 
 /* Compute ((*p_poly_base) ^ n) % (X ^ r - 1) */
-void polynomial_modular_power (Polynomial** pp_poly_res, Polynomial* p_poly_base, 
+static void polynomial_modular_power (Polynomial** pp_poly_res, Polynomial* p_poly_base, 
 			       mpz_t n, unsigned int r)
 {
   initialize_polynomial(pp_poly_res, 0);
@@ -254,7 +254,9 @@ void polynomial_modular_power (Polynomial** pp_poly_res, Polynomial* p_poly_base
 }
 
 
-
+/*
+  main function of the module
+*/
 int aks (mpz_t n)
 {
   /* Step 1: perfect power */
@@ -365,24 +367,4 @@ int aks (mpz_t n)
 
   /* Step 4: after all... */
   return PRIME;
-}
-
-
-int main (int argc, char* argv[])
-{
-  char n_str[1000];
-  FILE* fp = fopen(argv[1], "r");
-  mpz_t n;
-  mpz_init(n);
-  while (fscanf(fp, "%s", n_str) != EOF) {
-    clock_t start = clock();
-    mpz_set_str(n, n_str, 10);
-    gmp_printf("%Zd: ", n);
-    printf("%d\n", aks(n));
-    printf("Time: %f\n", 
-	   (double)(clock() - start) / (double)CLOCKS_PER_SEC);
-  }
-  mpz_clear(n);
-  fclose(fp);
-  return 0;
 }
