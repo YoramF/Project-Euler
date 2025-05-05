@@ -44,7 +44,7 @@ static int sieve_primality_test (unsigned int n, Sieve* p_sieve)
   unsigned int i;
   for (i = 2; i <= prev_size; i++) {
     if (mpz_tstbit(p_sieve->table, i) == 0) {
-      unsigned int j;
+      unsigned long int j;
       for (j = i * 2; j <= p_sieve->size; j += i) {
       	mpz_setbit(p_sieve->table, j);
       }
@@ -52,7 +52,6 @@ static int sieve_primality_test (unsigned int n, Sieve* p_sieve)
   }
   return sieve_primality_test(n, p_sieve);
 }
-
 
 
 typedef struct {
@@ -291,17 +290,17 @@ int aks (mpz_t n)
       mpz_t i;
       mpz_init_set_ui(i, 1);
       while (mpz_cmp(i, imax) <= 0) {
-	mpz_powm(pwm, n, i, r);
-	if (mpz_cmp_ui(pwm, 1) != 0) {
-	  is_break = 1;
-	  break;
-	}
-	mpz_add_ui(i, i, 1);
+        mpz_powm(pwm, n, i, r);
+        if (mpz_cmp_ui(pwm, 1) != 0) {
+          is_break = 1;
+          break;
+        }
+        mpz_add_ui(i, i, 1);
       }
       mpz_clear(pwm);
       mpz_clear(i);
       if (is_break) {
-	break;
+	      break;
       }
     }
     mpz_add_ui(r, r, 1);
