@@ -5,11 +5,11 @@ Requires GMP library
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <gmp.h>
+#include <stdbool.h>
 
-#define COMPOSITE 0
-#define PRIME 1
+#define COMPOSITE false
+#define PRIME true
 
 typedef struct {
   mpz_t table;
@@ -254,9 +254,9 @@ static void polynomial_modular_power (Polynomial** pp_poly_res, Polynomial* p_po
 
 
 /*
-  main function of the module
+  check if number is primed based on AKS algorithm
 */
-int aks (mpz_t n)
+bool is_prime_gmp (mpz_t n)
 {
   /* Step 1: perfect power */
   if (mpz_perfect_power_p(n)) {

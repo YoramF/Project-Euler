@@ -4,8 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <errno.h>
-#include <stdarg.h>
-#include <time.h>
+
 
 // generate prime numbers based on sieve of eratosthenes
 // support max up to 2^32-1
@@ -151,7 +150,7 @@ long unsigned  *gen_prime_ll_r (long unsigned min, long unsigned max, long unsig
 
 
 // An iterative binary search function.
-bool is_prime(long unsigned x, long unsigned arr[], long unsigned p_size) {
+bool is_prime_r(long unsigned x, long unsigned arr[], long unsigned p_size) {
     long unsigned mid, low = 0, high = p_size-1;
 
     while (low < high) {
@@ -183,7 +182,7 @@ bool is_prime(long unsigned x, long unsigned arr[], long unsigned p_size) {
 }
 
 // An iterative binary search function.
-bool is_prime_ll(long unsigned x, long unsigned arr[], long unsigned p_size) {
+bool is_prime_ll_r(long unsigned x, long unsigned arr[], long unsigned p_size) {
     long unsigned mid, low = 0, high = p_size-1;
 
     while (low < high) {
@@ -212,5 +211,21 @@ bool is_prime_ll(long unsigned x, long unsigned arr[], long unsigned p_size) {
         return true;
     else
         return false;
+}
+
+// stand alone prime chack
+bool is_prime (long unsigned int n) {
+    long unsigned i, m;
+
+    if (!(n & 1))
+        return (n == 2);
+
+    for (i = 3; i*i < n; i++) {
+        m = n % i;
+        if (m == 0L)
+            return false;
+    }
+
+    return true;
 }
 
